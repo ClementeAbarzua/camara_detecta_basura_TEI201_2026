@@ -1,3 +1,10 @@
+# 👥 Grupo
+
+Clemente Abarzúa
+Matías Armijo
+José Tomás De la Cuadra
+Santiago León
+
 # ♻️ Sistema IoT de Monitoreo Inteligente de Microbasurales
 
 Sistema de monitoreo automatizado basado en IoT y Machine Learning, desarrollado para apoyar la detección temprana de acumulación de residuos y mejorar la gestión de microbasurales en la comuna de Peñalolén, Santiago de Chile.

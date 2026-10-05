@@ -1,8 +1,8 @@
 # 👥 Grupo
 
-Clemente Abarzúa
-Matías Armijo
-José Tomás De la Cuadra
+Clemente Abarzúa/
+Matías Armijo/
+José Tomás De la Cuadra/
 Santiago León
 
 # ♻️ Sistema IoT de Monitoreo Inteligente de Microbasurales

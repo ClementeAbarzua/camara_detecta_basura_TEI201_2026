@@ -58,6 +58,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 **Software:**
 - Agregar un modelo de estimacion de Volumen.
+- Mejorar el modelo de detección de basura.
 
 **Diseño:**
 - Refinar encapsulado

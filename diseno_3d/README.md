@@ -5,27 +5,9 @@
 El modelo 3D debe incluir **TODOS** los componentes del prototipo:
 - ✅ Encapsulado exterior completo
 - ✅ Placa ESP32/Arduino (con dimensiones exactas)
-- ✅ Todos los sensores en posición de instalación
-- ✅ Todos los actuadores
 - ✅ Batería / fuente de alimentación
 - ✅ Cableado (routing aproximado)
-- ✅ Sistema de montaje (brackets, tornillos)
-- ✅ Orificios de ventilación (si aplica)
 
-**NO ES ACEPTABLE:** Solo el encapsulado vacío sin componentes internos
-
----
-
-## Carpetas
-
-#### `fusion360/`
-Archivos nativos de Fusion 360 (.f3d)
-
-#### `renders/`
-Imágenes renderizadas de alta calidad
-
-#### `planos/`
-Planos técnicos con cotas
 
 ---
 

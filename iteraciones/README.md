@@ -63,8 +63,8 @@ Cada carpeta debe incluir:
 **Estado:** Prototipo funcional mejorado
 
 **Mejoras implementadas:**
-- [Mejora 1]
-- [Mejora 2]
+- [Mejora 1] deteccion de 100% cuando es basura y cuando no 
+- [Mejora 2] conexion de forma inalambrica 
 
 **Problemas pendientes:**
 - [Problema 1]

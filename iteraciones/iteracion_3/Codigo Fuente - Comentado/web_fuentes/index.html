@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<!-- Metadatos y estilos adaptables al PC y al celular. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101720">
+<title>XIAO · Detector de basura</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101720;color:#edf5ff;font:16px system-ui,sans-serif}
+main{max-width:1120px;margin:auto;padding:22px}h1{margin:0 0 8px;font-size:clamp(26px,4vw,36px)}h2{font-size:19px;margin:0 0 15px}
+p{color:#b8c8da;line-height:1.5}.intro{margin:0 0 22px}.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,1fr);gap:18px}
+.panel{background:#1b2735;border-radius:18px;padding:18px;min-width:0}.camera{aspect-ratio:4/3;background:#090e15;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.camera img{display:block;width:100%;height:auto}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+button,a.button{font:inherit;font-weight:650;padding:12px 16px;border:0;border-radius:11px;background:#72e6c0;color:#082b22;text-decoration:none;cursor:pointer}
+button.secondary{background:#34485f;color:white}button:disabled{opacity:.5;cursor:wait}
+small,.small{font-size:13px;color:#b8c8da;line-height:1.5}#cameraStatus{min-height:24px;font-size:14px;margin:8px 0}#modelStatus{font-size:14px;margin:12px 0}
+.verdict{border-radius:13px;padding:17px;background:#34485f;margin-bottom:12px}.verdict strong{display:block;font-size:25px;margin-bottom:5px}.verdict span{font-size:14px;line-height:1.5;display:block}
+.verdict.trash{background:#55362a;color:#ffe1b6}.verdict.clear{background:#164538;color:#b9f8d9}.verdict.waiting{background:#34485f;color:#edf5ff}
+.class-row{margin:16px 0}.class-title{display:flex;justify-content:space-between;font-size:14px;gap:10px;margin-bottom:7px}.bar{height:9px;border-radius:8px;background:#0d1520;overflow:hidden}.fill{height:100%;width:0;background:#72e6c0;transition:width .18s}
+.overall{padding:14px;border:1px solid #40566e;border-radius:12px;margin:15px 0 23px}.overall-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;font-size:14px}.overall-title strong{font-size:24px;color:#72e6c0}.overall p{margin:9px 0 0;font-size:13px}.class-heading{font-size:15px;margin:18px 0 8px;color:#d5e1f0}.formula{font-size:13px;color:#b8c8da;margin-bottom:12px}
+.threshold{margin-top:20px;border-top:1px solid #34485f;padding-top:16px}.threshold label{font-size:14px;display:flex;justify-content:space-between;margin-bottom:8px}input[type=range]{width:100%;accent-color:#72e6c0}
+.crop{display:flex;gap:13px;align-items:center;margin-top:18px}.crop canvas{width:100px;height:100px;border:1px solid #536b84;border-radius:10px;background:#090e15}.crop p{font-size:13px;margin:0}
+.photo-panel{margin-top:18px}.photo-panel img{display:block;width:100%;max-width:800px;border-radius:12px}.footer{font-size:13px;line-height:1.6;margin-top:18px}[hidden]{display:none!important}
+@media(max-width:800px){main{padding:16px}.grid{grid-template-columns:1fr}.panel{padding:15px}}
+</style>
+</head>
+<body><main>
+<h1>📷 Detector de basura</h1>
+<p class="intro">Tu XIAO captura las imágenes. Este PC o celular las analiza, sin Internet.</p>
+<!-- Panel de camara y panel de resultados. Los calculos estan en app.js. -->
+<div class="grid">
+<section class="panel" aria-label="Cámara">
+<div class="camera"><img id="live" alt="Video en vivo de la caja de entrenamiento" hidden><span id="livePlaceholder">Preparando cámara…</span></div>
+<div class="actions">
+<button id="snap" disabled>Sacar foto</button>
+<button id="videoToggle" class="secondary" disabled>Pausar video</button>
+<button id="detectToggle" class="secondary" disabled>Pausar detección</button>
+</div>
+<p id="cameraStatus" role="status" aria-live="polite">Cargando la página…</p>
+<small>800 × 600 px · Abre una sola pestaña de la cámara a la vez.</small>
+</section>
+<section class="panel" aria-label="Resultados">
+<h2>¿Hay basura?</h2>
+<div id="verdict" class="verdict waiting" role="status" aria-live="polite"><strong id="verdictTitle">Preparando modelo…</strong><span id="verdictDetail">La primera carga puede tardar unos segundos.</span></div>
+<!-- La conclusion usa la suma promediada; abajo se conservan las cuatro clases. -->
+<div class="overall"><div class="overall-title"><span>Basura total · promedio</span><strong id="trashTotal">—</strong></div><div class="bar"><div id="trashFill" class="fill"></div></div><p id="trashNow">Suma actual: —</p><p id="windowStatus">Esperando capturas nuevas.</p></div>
+<h3 class="class-heading">Porcentajes por clase · en vivo</h3>
+<p class="formula">Basura total = botellas + papeles/cartones + bolsas.</p>
+<div id="classes"></div>
+<div class="threshold"><label for="threshold">Umbral para confirmar <strong id="thresholdValue">80 %</strong></label><input id="threshold" type="range" min="60" max="95" step="1" value="80"><small>Usa el promedio de hasta 5 capturas y confirma 3 lecturas seguidas de «basura» o «sin basura». Cambiar entre clases de basura no reinicia la confirmación.</small></div>
+<div class="crop"><canvas id="crop" width="224" height="224" aria-label="Recorte central que analiza el modelo"></canvas><p>Zona que analiza el modelo.<br>Mantén el objeto dentro de este recorte central.</p></div>
+<p id="modelStatus" role="status">Cargando tu primer entrenamiento…</p>
+</section>
+</div>
+<section id="photoPanel" class="panel photo-panel" hidden><h2>Foto capturada</h2><img id="photo" alt="Última foto capturada"><div class="actions"><a id="download" class="button">Descargar foto</a></div><small>La foto descargada conserva los 800 × 600 px originales. Guárdala antes de capturar otra o cerrar la página.</small></section>
+<p class="footer">La conclusión suma las tres clases de basura y las compara con «Sin basura». Los porcentajes individuales se muestran como referencia. «No seguro» indica un resultado ambiguo. Reconocer residuos distintos de los ejemplos sigue dependiendo del entrenamiento.</p>
+</main>
+<!-- Bibliotecas locales y logica principal, en ese orden. -->
+<script src="/tf.min.js?v=1.7.4"></script>
+<script src="/tm-image.min.js?v=0.8.5"></script>
+<script src="/app.js?v=2"></script>
+</body></html>

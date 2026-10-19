@@ -30,10 +30,6 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 **Nuevas funcionalidades:**
 - Deteccion de Basura
 
-**Optimizaciones:**
-- [Optimización 1]
-- [Optimización 2]
-
 **Bugs corregidos:**
 - Cuando no estaba seguro el modelo de que categoría era el objeto, no lograba concluir nada, entonces con un metodo de sumar porcentajes de las categorias y promediarlas, logra sacar una conclusión.
 

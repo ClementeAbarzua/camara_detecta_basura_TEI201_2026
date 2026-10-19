@@ -51,4 +51,5 @@ Incluir en esta carpeta:
 - Bateria de 4.6Wh
 
 **Software:**
-- Comenzar con el entrenaimento para la deteccion de basura
+- Comenzar con el entrenaimento para la deteccion de basura con teachable machine
+- https://teachablemachine.withgoogle.com/

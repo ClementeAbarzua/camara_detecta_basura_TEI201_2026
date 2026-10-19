@@ -2,7 +2,7 @@
 
 ## Información General
 
-**Fecha:** [19/10/2026]  
+**Fecha:** 19/10/2026  
 **Estado:** Prototipo funcional mejorado  
 **Avance asociado:** Avance #2
 

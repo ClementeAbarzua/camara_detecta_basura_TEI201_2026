@@ -2,7 +2,7 @@
 
 ## Información General
 
-**Fecha:** [19/10/2026]  
+**Fecha:** 19/10/2026  
 **Estado:** Prototipo funcional mejorado  
 **Avance asociado:** Avance #2
 
@@ -29,10 +29,6 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 ### Software
 **Nuevas funcionalidades:**
 - Deteccion de Basura
-
-**Optimizaciones:**
-- [Optimización 1]
-- [Optimización 2]
 
 **Bugs corregidos:**
 - Cuando no estaba seguro el modelo de que categoría era el objeto, no lograba concluir nada, entonces con un metodo de sumar porcentajes de las categorias y promediarlas, logra sacar una conclusión.
@@ -62,6 +58,7 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 **Software:**
 - Agregar un modelo de estimacion de Volumen.
+- Mejorar el modelo de detección de basura.
 
 **Diseño:**
 - Refinar encapsulado

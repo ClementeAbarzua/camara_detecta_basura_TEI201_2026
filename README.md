@@ -84,7 +84,12 @@ Abre https://xiao-monitor-production.up.railway.app/ desde cualquier red. Para a
 
 ## 📊 Resultados clave
 
-[COMPLETAR con los resultados de `testing/`: aciertos de 10 pruebas (%) y tiempo promedio hasta la alerta.]
+- **2.488 fotos analizadas** entre el 14 y el 22 de noviembre, todas guardadas en la base de datos.
+- **0,36 s** de análisis por foto en el servidor (mediana).
+- **~15 s** desde que aparece la basura hasta que el dashboard confirma "Hay basura" (mediana; rango 10–25 s, modo demo).
+- El resumen por hora identifica cuándo aparece la basura (por ejemplo, 15:00 el 21 de noviembre).
+
+Detalle, método y fallas encontradas en [`testing/`](testing/README.md).
 
 ## 🔐 Privacidad
 

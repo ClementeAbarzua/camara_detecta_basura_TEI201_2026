@@ -8,7 +8,6 @@
 | `capture-schedule.h` | Calcula la espera entre fotos: ciclo de 5 s en demo o 15 s después de cada envío en modo estable |
 | `certificados.h` | Certificados raíz públicos para validar la conexión HTTPS |
 | `config.example.h` | Plantilla: copiar como `config.h` y completar WiFi, URL y token. **`config.h` no se sube** (está en `.gitignore`) |
-| `LEEME.md` | Pasos para cargar el firmware |
 
 ### Configuración de Arduino IDE
 

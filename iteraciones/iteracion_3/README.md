@@ -18,7 +18,7 @@
 - Interruptor deslizante para apagar la batería sin abrir la carcasa.
 
 ### Software
-- Primero, la placa pasó a conectarse a una red WiFi externa con reconexión automática (carpeta `Codigo Fuente - Comentado/`).
+- Primero, la placa pasó a conectarse a una red WiFi externa con reconexión automática (versión guardada en `software/src/firmware/XIAO_Deteccion_WiFi/`).
 - Después, el análisis pasó de la placa y el navegador **a la nube**: el firmware final `XIAO_Remota` envía cada foto por HTTPS a un servidor en Railway, que ejecuta el modelo y guarda el resultado en PostgreSQL (Aiven). El sistema sigue detectando aunque nadie tenga la página abierta.
 - Regla de decisión: suma de clases de basura, promedio móvil, estado "No seguro" y confirmaciones seguidas.
 - Dashboard público con estado en vivo, gráficos históricos e historial, más un panel `/admin` para el umbral, la zona de análisis, el giro, la pausa, el video y la exportación de datos: https://xiao-monitor-production.up.railway.app/

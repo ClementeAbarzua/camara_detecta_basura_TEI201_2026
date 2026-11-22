@@ -8,7 +8,7 @@
 | `fusion360/Presentacion 3/LA CARCASA (stl).stl` | Exportación para imprimir |
 | `fusion360/Presentacion 2/Sensor Carcasa e Interior Design.step` | Diseño anterior (Avance #2, carcasa hexagonal) |
 | `planos/LA CARCASA - Blueprint.pdf` | Plano técnico con cotas y tolerancias |
-| `renders/` | Vistas del modelo 3D y fotos de iteraciones anteriores |
+| `renders/` | Renders finales (exterior, interior y explosionado), capturas del ensamble e imágenes de iteraciones anteriores |
 
 ## Gemelo 3D
 

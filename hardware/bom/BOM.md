@@ -17,7 +17,7 @@ Versión editable: [`BOM.csv`](BOM.csv).
 
 ## Qué significa para el proyecto
 
-Cada punto de monitoreo cuesta cerca de **27 USD** en materiales. Cubrir los ~45 microbasurales de Peñalolén costaría alrededor de **1.200 USD** en hardware, una fracción mínima de lo que la comuna destina a gestión y retiro de residuos (más de $5.124 millones de pesos al año).
+Cada punto de monitoreo cuesta cerca de **27 USD** en materiales. Cubrir los ~45 microbasurales de Peñalolén costaría alrededor de **1.200 USD** en hardware, una fracción mínima de lo que la comuna destina a gestión y retiro de residuos (más de $5.124 millones de pesos, según la Municipalidad).
 
 ## No incluido
 

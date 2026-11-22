@@ -1,0 +1,8 @@
+node_modules
+.env
+.env.*
+ca.pem
+.git
+.gitignore
+test
+*.log

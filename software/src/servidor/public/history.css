@@ -1,0 +1,17 @@
+.history { margin-top: 24px; }
+.history .sectionTitle p { margin: 0; }
+.tableScroll { overflow-x: auto; max-width: 100%; margin-top: 21px; border: 1px solid var(--border); border-radius: 12px; scrollbar-color: var(--border-strong) var(--surface-muted); }
+.history table { border-collapse: collapse; width: 100%; font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.history th, .history td { padding: 15px 14px; text-align: right; border-bottom: 1px solid var(--border); }
+.history th { background: var(--surface-muted); color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .35px; }
+.history tbody tr:nth-child(even) { background: var(--surface-soft); }
+.history tbody tr:hover { background: var(--accent-soft); }
+.history tbody tr:last-child td { border-bottom: 0; }
+.history th:first-child, .history td:first-child, .history th:nth-child(2), .history td:nth-child(2) { text-align: left; }
+.history td:nth-child(2) { font-weight: 650; }
+.historyActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.historyActions button { font-size: 12px; }
+.cameraControls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 15px; }
+.cameraControls p { margin: 0; flex: 1 1 220px; }
+.photo img.upsideDown { transform: rotate(180deg); }
+#cameraError:empty { display: none; }

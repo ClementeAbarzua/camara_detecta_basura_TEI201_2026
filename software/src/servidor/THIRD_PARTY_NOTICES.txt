@@ -1,0 +1,21 @@
+Este proyecto conserva el modelo entrenado por el usuario en Teachable Machine,
+con una base MobileNet de TensorFlow y el archivo de licencia Apache 2.0.
+
+Dependencias instaladas con npm (node_modules no se incluye en el ZIP):
+- pg 8.23.1: MIT, https://github.com/brianc/node-postgres
+- TensorFlow.js 4.22.0: Apache-2.0, https://github.com/tensorflow/tfjs
+- Sharp 0.35.5: Apache-2.0, https://github.com/lovell/sharp
+- ws 8.23.0: MIT, https://github.com/websockets/ws
+Sus dependencias y binarios mantienen sus propias licencias y avisos.
+
+Dependencia de desarrollo: @electric-sql/pglite 0.5.16, Apache-2.0,
+https://github.com/electric-sql/pglite. Incluye PostgreSQL con su propia licencia.
+
+certificados.h contiene certificados raiz publicos de ISRG, Google Trust
+Services y DigiCert. No contiene claves privadas ni credenciales del usuario.
+
+Firmware: WebSockets 2.7.2, Markus Sattler / Links2004. LGPL-2.1.
+Se instala desde el gestor de bibliotecas de Arduino; no se redistribuye su codigo.
+Fuente: https://github.com/Links2004/arduinoWebSockets
+Uso: conexion WSS autenticada y continua para el video privado. Se conserva
+la verificacion TLS por CA; no se desactiva la validacion del certificado.

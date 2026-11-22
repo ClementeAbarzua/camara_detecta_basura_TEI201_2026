@@ -7,7 +7,7 @@
 **Condiciones:**
 - Lugar: [PENDIENTE: sala / exterior], iluminación [PENDIENTE: natural / artificial].
 - Cámara en el trípode a [PENDIENTE] m del suelo y [PENDIENTE] m de la zona observada.
-- Umbral configurado en 80 %.
+- Umbral configurado en 80 %, perfil `demo` (foto cada 5 s, promedio de 3, 2 confirmaciones).
 
 **Procedimiento:**
 1. Encender el dispositivo y abrir el dashboard.
@@ -35,7 +35,7 @@
 
 **Procedimiento:** poner el objeto, iniciar un cronómetro y detenerlo cuando cambie el estado en el dashboard. Repetir 10 veces.
 
-**Criterio de éxito:** promedio ≤ 10 s.
+**Criterio de éxito:** promedio ≤ 30 s (en modo demo se esperan unos 15–20 s: hacen falta 4 fotos de 5 s para confirmar).
 
 **Resultados:** promedio [PENDIENTE] s, mínimo [PENDIENTE] s, máximo [PENDIENTE] s.
 

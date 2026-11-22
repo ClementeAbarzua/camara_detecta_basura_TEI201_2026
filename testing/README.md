@@ -9,7 +9,7 @@ Comprobar que el sistema detecta correctamente la presencia de basura y que la i
 | Carpeta | Contenido |
 |---|---|
 | `reportes/` | Protocolo de pruebas y resultados ([`protocolo_pruebas.md`](reportes/protocolo_pruebas.md)) |
-| `datos/` | Datos exportados de la base de datos (CSV) y tablas de resultados |
+| `datos/` | Datos exportados desde `/admin` → Exportar (CSV) y tablas de resultados |
 | `evidencias/` | Capturas del dashboard y fotos de las pruebas |
 
 ## Resumen de resultados
@@ -17,7 +17,7 @@ Comprobar que el sistema detecta correctamente la presencia de basura y que la i
 | Métrica | Resultado | Criterio de éxito |
 |---|---|---|
 | Exactitud de detección (hay / no hay basura) | [PENDIENTE] % | ≥ 80 % |
-| Tiempo desde que aparece la basura hasta la alerta | [PENDIENTE] s | ≤ 10 s |
+| Tiempo desde que aparece la basura hasta la alerta | [PENDIENTE] s | ≤ 30 s |
 | Falsos positivos con escena vacía | [PENDIENTE] de [N] | 0 |
 | Pérdidas de conexión durante la prueba continua | [PENDIENTE] | 0 |
 

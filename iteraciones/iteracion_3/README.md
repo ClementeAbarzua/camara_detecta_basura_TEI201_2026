@@ -18,10 +18,11 @@
 - Interruptor deslizante para apagar la batería sin abrir la carcasa.
 
 ### Software
-- La placa se conecta en modo estación a una red WiFi, con reconexión automática cada 20 s.
-- Código fuente comentado por secciones (carpeta `Codigo Fuente - Comentado/`, copiado como versión final a `software/src/firmware/`).
-- Regla de decisión por suma de clases de basura y promedio de las últimas 5 capturas.
-- Servidor en Railway con base de datos PostgreSQL (Aiven) y dashboard web: https://xiao-monitor-production.up.railway.app/
+- Primero, la placa pasó a conectarse a una red WiFi externa con reconexión automática (carpeta `Codigo Fuente - Comentado/`).
+- Después, el análisis pasó de la placa y el navegador **a la nube**: el firmware final `XIAO_Remota` envía cada foto por HTTPS a un servidor en Railway, que ejecuta el modelo y guarda el resultado en PostgreSQL (Aiven). El sistema sigue detectando aunque nadie tenga la página abierta.
+- Regla de decisión: suma de clases de basura, promedio móvil, estado "No seguro" y confirmaciones seguidas.
+- Dashboard público con estado en vivo, gráficos históricos e historial, más un panel `/admin` para el umbral, la zona de análisis, el giro, la pausa, el video y la exportación de datos: https://xiao-monitor-production.up.railway.app/
+- Código en `software/src/firmware/XIAO_Remota/` y `software/src/servidor/`.
 
 ### Diseño mecánico
 - Carcasa nueva "LA CARCASA" de 77 × 58 × 30 mm, en dos mitades unidas con tornillos sobre insertos de bronce.

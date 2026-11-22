@@ -7,9 +7,9 @@ Esta carpeta documenta cómo evolucionó el prototipo durante el semestre.
 | **Fecha** | 23/09/2026 | 19/10/2026 | 23/11/2026 |
 | **Avance** | Planificación / Avance #1 | Avance #2 | Avance #3 |
 | **Objetivo** | Ver la imagen de la cámara en un navegador | Detectar basura con Machine Learning | Sistema IoT completo con nube y dashboard |
-| **Red** | Red propia de la XIAO (modo AP) | Red propia y luego WiFi externa | WiFi externa con reconexión automática |
+| **Red** | Red propia de la XIAO (modo AP) | Red propia y luego WiFi externa | WiFi externa + envío HTTPS a la nube |
 | **Alimentación** | USB-C | Batería LiPo 4.6 Wh | Batería + interruptor |
-| **Detección** | — | Teachable Machine, 4 clases | Suma de clases + promedio de 5 capturas |
+| **Detección** | — | Teachable Machine en el navegador, 4 clases | Modelo en el servidor + suma de clases, promedio y confirmaciones |
 | **Datos** | Solo en vivo | Solo en vivo | Guardados en PostgreSQL (Aiven) + dashboard en Railway |
 | **Carcasa** | — | Prisma hexagonal (86 × 60 × 22 mm) | "LA CARCASA" atornillada (77 × 58 × 30 mm) |
 

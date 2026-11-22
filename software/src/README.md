@@ -1,25 +1,25 @@
 # Código fuente
 
-## `firmware/XIAO_Deteccion_WiFi/`
+## `firmware/XIAO_Remota/` — firmware final
 
 | Archivo | Qué hace |
 |---|---|
-| `XIAO_Deteccion_WiFi.ino` | Programa principal. Inicia la cámara, se conecta al WiFi (reintenta cada 20 s sin bloquear `loop()`) y levanta dos servidores HTTP: puerto 80 (página, modelo y `/capture`) y puerto 81 (video MJPEG). |
-| `assets.h` | Página web, librerías JavaScript y modelo comprimidos con gzip, guardados en la flash de la placa. Se genera con `herramientas/generar_assets.py`. |
-| `web_fuentes/index.html`, `web_fuentes/app.js` | Fuentes de la página: piden capturas, ejecutan el modelo y aplican la regla de decisión. |
-| `herramientas/generar_assets.py` | Convierte `web_fuentes/` y el modelo en `assets.h`. Ejecutar si se cambia la página o el modelo. |
-| `THIRD_PARTY_NOTICES.txt`, `APACHE_LICENSE.txt` | Licencias de TensorFlow.js y Teachable Machine. |
+| `XIAO_Remota.ino` | Programa principal: conexión WiFi con reconexión, captura JPEG de 800 × 600, envío HTTPS a Railway con token, pausa remota desde `/admin` y video en vivo por WebSocket para orientar la cámara |
+| `capture-schedule.h` | Calcula la espera entre fotos: ciclo de 5 s en demo o 15 s después de cada envío en modo estable |
+| `certificados.h` | Certificados raíz públicos para validar la conexión HTTPS |
+| `config.example.h` | Plantilla: copiar como `config.h` y completar WiFi, URL y token. **`config.h` no se sube** (está en `.gitignore`) |
+| `LEEME.md` | Pasos para cargar el firmware |
 
 ### Configuración de Arduino IDE
 
-- Paquete de placas: **esp32 by Espressif Systems 3.3.0**
-- Placa: **XIAO_ESP32S3**
-- PSRAM: **OPI PSRAM**
-- USB CDC On Boot: **Enabled**
-- Partition Scheme: **Maximum APP (7.9MB APP No OTA/No FS)**
+- Paquete de placas: **esp32 by Espressif Systems 3.3.x**
+- Placa: **XIAO_ESP32S3**, PSRAM **OPI PSRAM**, USB CDC On Boot **Enabled**
+- Librería: **WebSockets** de Markus Sattler, versión **2.7.2** (gestor de librerías)
 
-Antes de subir el código, reemplaza `NOMBRE_DE_TU_WIFI` y `CONTRASENA_DE_TU_WIFI` por tu red. No subas tu contraseña real al repositorio.
+## `servidor/` — servidor y dashboard
 
-## `servidor/`
+Ver [`servidor/README.md`](servidor/README.md).
 
-Servidor y dashboard en Railway. Ver [`servidor/README.md`](servidor/README.md).
+## `firmware/XIAO_Deteccion_WiFi/` — versión anterior
+
+Firmware de la iteración 3 (Avance #2). La placa servía una página web y el modelo corría en el navegador de quien la abría. No guardaba datos y solo funcionaba en la misma red. Se reemplazó por `XIAO_Remota` para que el análisis siguiera funcionando con el navegador cerrado y los datos quedaran guardados.

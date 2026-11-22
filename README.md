@@ -1,6 +1,6 @@
 # ♻️ Monitoreo Inteligente de Microbasurales — TEI201 2026
 
-Cámara IoT de bajo costo (XIAO ESP32-S3 Sense) que vigila un punto crítico de Peñalolén, detecta con Machine Learning si hay basura acumulada y registra cada detección en una base de datos en la nube. Un dashboard web muestra el estado en tiempo real y el histórico, para que la municipalidad priorice qué puntos limpiar.
+Cámara IoT de bajo costo (XIAO ESP32-S3 Sense) que vigila un punto crítico de Peñalolén y envía fotos a un servidor en la nube. Ahí un modelo de Machine Learning decide si hay basura acumulada, cada resultado queda guardado en una base de datos y un dashboard web muestra el estado en tiempo real y el histórico, para que la municipalidad priorice qué puntos limpiar.
 
 **Dashboard:** https://xiao-monitor-production.up.railway.app/
 **Estado:** ✅ Prototipo funcional — Avance #3 (23 de noviembre de 2026)
@@ -16,7 +16,7 @@ Cámara IoT de bajo costo (XIAO ESP32-S3 Sense) que vigila un punto crítico de 
 
 Peñalolén tiene cerca de **45 microbasurales** activos, con unos **220 m³ de residuos diarios** acumulados en ellos. Hoy la gestión es **reactiva**: los puntos se detectan por reclamos vecinales o recorridos, lo que retrasa el retiro y gasta recursos (más de **$5.124 millones** en gestión y retiro de residuos).
 
-**Para quién:** Municipalidad de Peñalolén y sus equipos de aseo; indirectamente, vecinos y usuarios de los espacios públicos.
+**Para quién:** Municipalidad de Peñalolén y sus equipos de aseo; indirectamente, los 236.478 habitantes de la comuna (Censo 2024) y quienes usan sus espacios públicos.
 
 **Objetivo:** pasar de una gestión reactiva a una preventiva, sabiendo **cuándo y dónde** aparece basura sin tener que ir a mirar.
 
@@ -26,18 +26,19 @@ ODS relacionados: **11** (ciudades sostenibles) y **12** (producción y consumo 
 
 ```
 XIAO ESP32-S3 Sense + cámara OV3660
-        │  captura de imagen
+        │  foto JPEG cada 5 s (demo) o 15 s (estable), por HTTPS
         ▼
-Modelo Teachable Machine (TensorFlow.js)
-        │  ¿hay basura? (Botellas + Papeles/Cartones + Bolsas ≥ umbral)
+Servidor Node.js en Railway
+        │  modelo Teachable Machine (TensorFlow.js) + regla de decisión
+        ├──► PostgreSQL en Aiven (cada medición queda guardada)
         ▼
-Servidor Express en Railway  ──►  Base de datos PostgreSQL (Aiven)
-        │
-        ▼
-Dashboard web: estado actual, histórico y alertas
+Dashboard web público: estado actual, gráficos e historial
+Panel /admin: umbral, zona de análisis, giro, pausa, video y exportación CSV/JSON
 ```
 
-**Regla de decisión:** el modelo clasifica en 4 clases (Sin basura, Botellas, Papeles y Cartones, Bolsas). Se suman las 3 clases de basura, se promedian las últimas 5 capturas y se declara "Hay basura" cuando ese promedio supera el umbral (80 % por defecto) de forma consecutiva. Así el sistema concluye aunque el objeto no sea exactamente uno de los entrenados.
+**Regla de decisión:** el modelo clasifica cada foto en 4 clases (Sin basura, Botellas, Papeles y Cartones, Bolsas). Se suman las 3 clases de basura y se promedian las últimas fotos. Con umbral de 80 %: ≥ 80 % → "Hay basura", ≤ 20 % → "Sin basura" y lo intermedio es "No seguro". El resultado se confirma solo si se repite en evaluaciones seguidas. Así el sistema concluye aunque el residuo no sea exactamente uno de los entrenados, y no se deja engañar por algo que pasa un instante frente a la cámara. Detalle en [`software/docs/`](software/docs/README.md).
+
+**Información para decidir:** el dashboard indica qué punto tiene basura confirmada y desde cuándo. El gráfico histórico muestra a qué horas aparece la basura, lo que permite programar el retiro en vez de esperar un reclamo.
 
 ## 🧰 Componentes para replicar el hardware
 
@@ -51,44 +52,43 @@ Dashboard web: estado actual, histórico y alertas
 
 Costo aproximado de materiales: **~27 USD por dispositivo**. Detalle, precios y esquema en [`hardware/`](hardware/).
 
-
 ## ▶️ Instrucciones de uso
 
-### 1. Cargar el firmware
-1. Instala **Arduino IDE** y el paquete de placas **esp32 by Espressif Systems 3.3.0**.
-2. Abre `software/src/firmware/XIAO_Deteccion_WiFi/XIAO_Deteccion_WiFi.ino` (con `assets.h` en la misma carpeta).
-3. En *Herramientas* selecciona: Placa **XIAO_ESP32S3**, PSRAM **OPI PSRAM**, USB CDC On Boot **Enabled**, Partition Scheme **Maximum APP (7.9MB APP No OTA/No FS)**.
-4. Al inicio del sketch reemplaza `NOMBRE_DE_TU_WIFI` y `CONTRASENA_DE_TU_WIFI` por tu red (debe ser de 2.4 GHz). **No subas tu contraseña real al repositorio.**
-5. Sube el código y abre el monitor serie a 115200 baudios para ver la IP.
+### 1. Servidor y base de datos
+1. Crea un PostgreSQL en Aiven (plan Free) y copia su Service URI y su certificado CA.
+2. Despliega `software/src/servidor/` en Railway (Dockerfile incluido) y configura las variables de `.env.example`: `DATABASE_URL`, `DATABASE_CA_CERT`, `CAMERA_TOKEN`, `DASHBOARD_PASSWORD` y `SESSION_SECRET`.
+3. Para probar localmente: `cd software/src/servidor && npm install && npm run dev`.
 
-### 2. Servidor y base de datos
-1. El código del servidor está en `software/src/servidor/`.
-2. Crea un servicio PostgreSQL gratuito en Aiven y copia la URL de conexión.
-3. Copia `.env.example` como `.env` y completa `DATABASE_URL`.
-4. Local: `npm install` y luego `npm start`. Nube: el repo está conectado a Railway, que despliega solo con cada push.
+Guía detallada: [`software/src/servidor/README.md`](software/src/servidor/README.md).
+
+### 2. Cargar el firmware
+1. Instala **Arduino IDE**, el paquete **esp32 by Espressif Systems 3.3.x** y la librería **WebSockets** de Markus Sattler **2.7.2**.
+2. Abre `software/src/firmware/XIAO_Remota/XIAO_Remota.ino`.
+3. Copia `config.example.h` como `config.h` y completa tu red WiFi (2.4 GHz), la URL del servidor y el mismo `CAMERA_TOKEN` de Railway. **`config.h` no se sube al repositorio.**
+4. En *Herramientas*: placa **XIAO_ESP32S3**, PSRAM **OPI PSRAM**, USB CDC On Boot **Enabled**. Sube el código.
 
 ### 3. Ver el dashboard
-Abre https://xiao-monitor-production.up.railway.app/
+Abre https://xiao-monitor-production.up.railway.app/ desde cualquier red. Para ajustes y exportación de datos entra a `/admin` con la contraseña.
 
 ## 📁 Estructura del repositorio
 
 | Carpeta | Contenido |
 |---|---|
-| `software/` | Firmware final del XIAO, servidor (Railway) y dashboard |
+| `software/` | Firmware final de la XIAO, servidor con el modelo y dashboard |
 | `hardware/` | Esquema de conexiones, BOM con costos y fotos del prototipo |
-| `diseno_3d/` | Archivo Fusion 360 (.f3z), STL, planos en PDF y renders |
-| `testing/` | Protocolo de pruebas, datos exportados y evidencias |
-| `iteraciones/` | Evolución del prototipo: v1 cámara web → v2 detección ML → v3 nube |
-| `documentacion/` | Presentaciones de los tres avances e informes |
+| `diseno_3d/` | Archivo Fusion 360 (.f3z), STL, plano en PDF y renders |
+| `testing/` | Protocolo de pruebas, datos y evidencias |
+| `iteraciones/` | Evolución: v1 cámara en el navegador → v2 detección ML → v3 nube y dashboard |
+| `documentacion/` | Presentaciones de los tres avances |
 | `FUENTES.md` | Librerías, código externo y uso de IA |
 
 ## 📊 Resultados clave
 
-[COMPLETAR con los números reales de testing/: por ejemplo, "X de Y pruebas detectadas correctamente (Z %)", latencia de detección en segundos y la falla principal encontrada.]
+[COMPLETAR con los resultados de `testing/`: aciertos de 10 pruebas (%) y tiempo promedio hasta la alerta.]
 
 ## 🔐 Privacidad
 
-El sistema detecta residuos, no personas. Las imágenes se procesan para decidir "hay / no hay basura" y lo que se guarda en la base de datos es el resultado de la detección, no la identificación de quienes pasan.
+El sistema detecta residuos, no personas. El monitor público muestra la miniatura de la última foto para verificar la detección. En una instalación real habría que limitar esa vista y definir cuánto tiempo se guardan las imágenes.
 
 ## 📚 Fuentes del problema
 

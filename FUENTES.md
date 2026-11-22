@@ -4,26 +4,39 @@ Declaración de librerías, código externo, modelos de terceros y uso de inteli
 
 ## Librerías utilizadas
 
+### Firmware de la cámara (`software/src/firmware/XIAO_Remota/`)
+
 | Librería | Versión | Uso en el proyecto | Fuente |
 |---|---|---|---|
-| Arduino-ESP32 (core de Espressif) | 3.3.0 | Base del firmware, `WiFi.h` para conexión y reconexión | https://github.com/espressif/arduino-esp32 |
-| esp32-camera (`esp_camera.h`) | incluida en el core 3.3.0 | Control de la cámara OV3660 y buffers JPEG | https://github.com/espressif/esp32-camera |
-| ESP-IDF HTTP Server (`esp_http_server.h`) | incluida en el core 3.3.0 | Servidor web de la placa: página, `/capture` y video MJPEG | https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/protocols/esp_http_server.html |
-| FreeRTOS (`semphr.h`) | incluida en el core 3.3.0 | Mutex para compartir la cámara entre servidores | https://www.freertos.org |
-| TensorFlow.js | 1.7.4 | Ejecuta el modelo de clasificación en el navegador | https://github.com/tensorflow/tfjs |
-| @teachablemachine/image | 0.8.5 | Carga del modelo y preprocesamiento de imágenes | https://github.com/googlecreativelab/teachablemachine-community |
-| Express | ver `package.json` del servidor | Servidor web y API en Railway | https://expressjs.com |
-| pg (node-postgres) | ver `package.json` del servidor | Conexión del servidor con PostgreSQL | https://node-postgres.com |
+| Arduino-ESP32 (core de Espressif) | 3.3.x | Base del firmware; `WiFi.h` para conexión y reconexión | https://github.com/espressif/arduino-esp32 |
+| esp32-camera (`esp_camera.h`) | incluida en el core | Control de la cámara OV3660 y captura JPEG | https://github.com/espressif/esp32-camera |
+| ESP-IDF HTTP Client (`esp_http_client.h`) | incluida en el core | Envío HTTPS de las fotos al servidor | https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/protocols/esp_http_client.html |
+| WebSockets (Markus Sattler) | 2.7.2 | Video en vivo hacia `/admin` para orientar la cámara | https://github.com/Links2004/arduinoWebSockets |
 
-Licencias de TensorFlow.js y Teachable Machine: Apache 2.0, ver `THIRD_PARTY_NOTICES.txt` y `APACHE_LICENSE.txt` junto al firmware.
+### Servidor y dashboard (`software/src/servidor/`)
+
+| Librería | Versión | Uso en el proyecto | Fuente |
+|---|---|---|---|
+| @tensorflow/tfjs | 4.22.0 | Ejecuta el modelo de Teachable Machine en el servidor | https://github.com/tensorflow/tfjs |
+| sharp | 0.35.5 | Gira, recorta y escala cada foto a 224 × 224 | https://sharp.pixelplumbing.com |
+| pg (node-postgres) | 8.23.1 | Conexión TLS a PostgreSQL de Aiven | https://node-postgres.com |
+| ws | 8.23.0 | Recepción del video en vivo por WebSocket | https://github.com/websockets/ws |
+| @electric-sql/pglite | 0.5.16 | PostgreSQL en memoria, solo para las pruebas automáticas | https://github.com/electric-sql/pglite |
+
+El servidor usa el módulo `http` de Node.js (sin Express). La página del dashboard está escrita sin librerías externas: los gráficos son SVG propios.
+
+### Versión anterior (`software/src/firmware/XIAO_Deteccion_WiFi/`)
+
+TensorFlow.js 1.7.4 y @teachablemachine/image 0.8.5, embebidos en `assets.h` (Apache 2.0, ver `THIRD_PARTY_NOTICES.txt` y `APACHE_LICENSE.txt` en esa carpeta).
 
 ## Servicios y herramientas
 
 | Herramienta | Uso |
 |---|---|
 | Teachable Machine (Google) | Entrenamiento del clasificador con fotos propias tomadas con la XIAO (clases: Sin basura, Botellas, Papeles y Cartones, Bolsas) |
-| Railway | Hosting del servidor y del dashboard |
-| Aiven (PostgreSQL) | Base de datos persistente de detecciones |
+| Railway | Hosting del servidor y del dashboard, desplegado desde GitHub |
+| Aiven (PostgreSQL, plan Free) | Base de datos persistente de las mediciones |
+| GitHub | Código del servidor (`santileonv/camara-basura`) y respaldo del proyecto |
 | Autodesk Fusion 360 | Diseño del encapsulado y gemelo 3D |
 | Arduino IDE | Compilación y carga del firmware |
 
@@ -36,43 +49,42 @@ Licencias de TensorFlow.js y Teachable Machine: Apache 2.0, ver `THIRD_PARTY_NOT
 
 ## Código externo adaptado
 
-### Servidor y conexión a la base de datos (`software/src/servidor/server.js`)
+### Arquitectura servidor + base de datos en la nube (`software/src/servidor/`)
 - Fuente: Guía "ESP32 conectado a una base de datos en la nube — Aiven + Railway + GitHub", Fernando Méndez, TEI201 2026.
-- Adaptación: en lugar de lecturas de un sensor, el servidor guarda el resultado de cada detección de basura y el dashboard muestra el estado actual y el histórico.
+- Adaptación: la guía envía lecturas de un sensor. En nuestro proyecto la cámara envía fotos, el servidor ejecuta el modelo de clasificación y guarda en la tabla `mediciones` las probabilidades de cada clase, el promedio, el umbral y la conclusión. Se agregaron un panel de administración, gráficos históricos y video para orientar la cámara.
 
-### Configuración de la cámara (`XIAO_Deteccion_WiFi.ino`, inicialización de la cámara)
+### Configuración de la cámara (inicialización en los `.ino`)
 - Fuente: ejemplo CameraWebServer del core Arduino-ESP32 y wiki de Seeed Studio para XIAO ESP32S3 Sense (https://wiki.seeedstudio.com/xiao_esp32s3_camera_usage/).
-- Adaptación: pines de la XIAO, resolución y ajustes de imagen iguales a los usados para tomar las fotos de entrenamiento.
+- Adaptación: pines de la XIAO, resolución de 800 × 600 y ajustes de imagen iguales a los usados para tomar las fotos de entrenamiento.
 
-### Carga del modelo de Teachable Machine (`web_fuentes/app.js`)
-- Fuente: fragmento de exportación "TensorFlow.js" que entrega Teachable Machine.
-- Adaptación: el modelo y las librerías se sirven desde la flash de la placa (sin Internet); se agregó la regla de decisión por suma de clases de basura, promedio de 5 capturas y umbral ajustable.
+### Modelo de Teachable Machine (`software/src/servidor/model/`)
+- Fuente: exportación "TensorFlow.js" de Teachable Machine, entrenada por el equipo con fotos propias.
+- Adaptación: en lugar de correr en el navegador, el modelo se carga en el servidor. Se agregaron el recorte de la zona de análisis y la regla de decisión por suma de clases de basura.
 
 ## Uso de Inteligencia Artificial
 
-Usamos **Claude (Anthropic)** durante todo el proyecto, entre septiembre y noviembre de 2026, para escribir y depurar código y para ordenar la documentación. Todo lo generado fue probado en el prototipo real y adaptado por el equipo. Cada integrante puede explicar qué hace cada parte.
+Usamos **Claude (Anthropic)** durante todo el proyecto, entre septiembre y noviembre de 2026, para escribir y depurar código y para ordenar la documentación. Todo lo generado se probó en el prototipo real y fue adaptado por el equipo, que puede explicar cada parte.
 
-### Firmware del XIAO (`software/src/firmware/XIAO_Deteccion_WiFi/XIAO_Deteccion_WiFi.ino`)
-- Herramienta: Claude (septiembre–octubre 2026)
-- Uso: pedimos un firmware para la XIAO ESP32-S3 Sense que transmitiera la cámara a una página web. Primero en una red propia (modo AP, iteración 1) y después conectado a una red WiFi externa (iteración 3).
-- Adaptación: ajustes de imagen iguales a los usados para tomar las fotos de entrenamiento; esquema de particiones *Maximum APP* para que el modelo quepa en la flash; comentarios por secciones.
-- Comprensión: la placa inicia la cámara, se conecta al WiFi con reintentos cada 20 s sin bloquear `loop()` y levanta dos servidores HTTP: puerto 80 (página, modelo y `/capture`) y puerto 81 (video MJPEG). Un mutex evita que dos peticiones usen la cámara al mismo tiempo.
+### Firmware de la cámara (`XIAO_Remota.ino`, `capture-schedule.h`)
+- Herramienta: Claude (septiembre–noviembre 2026)
+- Uso: empezamos con un firmware que transmitía la cámara a una página web en una red propia (iteración 1). Después pasamos a uno que se conecta a una red WiFi externa (iteración 3) y finalmente a uno que envía las fotos por HTTPS a Railway.
+- Adaptación: ajustes de imagen iguales a los del entrenamiento, ciclo de 5 s para la demo y de 15 s para operación normal, pausa remota desde el panel y video para orientar la cámara en la instalación.
+- Comprensión: la placa se conecta al WiFi y reintenta si se cae; toma una foto JPEG, la envía por HTTPS a `/api/ingest` con un token y espera lo que falta para completar el ciclo. Usa certificados raíz para validar el servidor. Solo hace conexiones salientes, por eso no requiere abrir puertos.
 
-### Página de detección y regla de decisión (`web_fuentes/app.js`, `web_fuentes/index.html`)
-- Herramienta: Claude (octubre 2026)
-- Uso: integrar el modelo exportado de Teachable Machine en una página que pide capturas a la placa y las clasifica en el navegador.
-- Adaptación: el equipo detectó que con objetos no entrenados el sistema nunca concluía, porque ninguna clase llegaba sola al 80 %. Pedimos cambiar la regla para sumar las tres clases de basura y promediar las últimas 5 capturas.
-- Comprensión: se guardan las últimas 5 probabilidades de basura; con al menos 3 se promedia y se compara con el umbral (80 %); el veredicto solo cambia si el mismo resultado se repite 3 veces seguidas.
-
-### Script `herramientas/generar_assets.py`
-- Herramienta: Claude (octubre 2026)
-- Uso: comprimir con gzip la página, las librerías y el modelo, y convertirlos en el arreglo de bytes `assets.h` que se graba en la flash. Así la placa funciona sin Internet ni tarjeta SD.
-
-### Servidor, base de datos y dashboard (`software/src/servidor/`)
+### Servidor y regla de decisión (`software/src/servidor/`)
 - Herramienta: Claude (noviembre 2026), siguiendo la guía del curso Aiven + Railway.
-- Uso: servidor Express que recibe las detecciones, las guarda en PostgreSQL (Aiven) y sirve el dashboard en Railway.
-- Adaptación: se adaptó la guía del curso para guardar detecciones de basura en lugar de lecturas de sensor.
-- Comprensión: el servidor recibe cada detección por HTTP, la inserta en una tabla de PostgreSQL en Aiven y la página del dashboard consulta esa tabla para mostrar el estado actual y el histórico.
+- Uso: servidor Node.js que recibe las fotos, ejecuta el modelo, aplica la regla de decisión, guarda en PostgreSQL y sirve el dashboard.
+- Adaptación: el equipo detectó en la iteración 2 que con objetos no entrenados el sistema nunca concluía, porque ninguna clase llegaba sola al 80 %. Pedimos sumar las tres clases de basura, promediar las últimas fotos y agregar el estado "No seguro" para no confundir una lectura dudosa con "Sin basura".
+- Comprensión: `lib/decision.js` suma Botellas + Papeles y Cartones + Bolsas y promedia las últimas 3 (demo) o 5 (estable) fotos. Si el promedio es ≥ umbral propone "Hay basura", si es ≤ (1 − umbral) propone "Sin basura" y si no, "No seguro". El resultado se confirma tras 2 o 3 evaluaciones seguidas iguales. Cada medición se inserta en la tabla `mediciones` y la página recibe un aviso en vivo para actualizarse.
+
+### Dashboard (`software/src/servidor/public/`)
+- Herramienta: Claude (noviembre 2026)
+- Uso: monitor con estado actual, avance de la decisión, gráfico "¿Hay basura?" en el tiempo, gráfico de probabilidad con umbrales e historial; panel `/admin` con ajustes y exportación.
+- Adaptación: el equipo definió qué información mostrar para responder al problema (si hay basura, desde cuándo y a qué horas aparece) y ajustó el umbral, el giro y la zona de análisis según la instalación real.
+
+### Versión anterior: detección en el navegador (`XIAO_Deteccion_WiFi/`, `generar_assets.py`)
+- Herramienta: Claude (octubre 2026)
+- Uso: página que ejecutaba el modelo en el navegador y script que comprimía página, librerías y modelo en `assets.h` para grabarlos en la flash de la placa.
 
 ### Documentación y organización del repositorio
 - Herramienta: Claude (noviembre 2026)

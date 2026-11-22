@@ -1,0 +1,28 @@
+{
+  "name": "xiao-railway-remoto",
+  "version": "3.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env server.js",
+    "test": "node --test test/*.test.js",
+    "check-model": "node scripts/check-model.js",
+    "secrets": "node scripts/secrets.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:import": "node scripts/import-history.js",
+    "db:copy-to-aiven": "node scripts/copy-to-aiven.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "4.22.0",
+    "pg": "8.23.1",
+    "sharp": "0.35.5",
+    "ws": "8.23.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.16"
+  }
+}

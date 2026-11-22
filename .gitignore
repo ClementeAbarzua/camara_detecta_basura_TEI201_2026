@@ -1,7 +1,11 @@
 # Credenciales: nunca subir
 .env
+.env.*
+!.env.example
 secrets.h
-config_local.h
+config.h
+ca.pem
+Config_XIAO_Railway.txt
 
 # Node (servidor)
 node_modules/

@@ -1,0 +1,25 @@
+Dependencias JavaScript incluidas en assets.h, comprimidas con gzip.
+
+TensorFlow.js 1.7.4
+Copyright Google LLC y colaboradores de TensorFlow.js.
+Licencia: Apache License 2.0 (ver APACHE_LICENSE.txt).
+Distribución original:
+https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js
+Proyecto: https://github.com/tensorflow/tfjs
+
+Teachable Machine Image 0.8.5
+Copyright 2019 Google LLC y colaboradores.
+Licencia declarada por @teachablemachine/image: Apache License 2.0
+(ver APACHE_LICENSE.txt).
+Distribución original:
+https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js
+Proyecto: https://github.com/googlecreativelab/teachablemachine-community
+
+Se retiraron las referencias a source maps de los archivos distribuidos.
+Se conservaron los avisos de licencia y el código ejecutable, y se comprimieron
+para servirlos desde flash. La biblioteca oficial realiza el preprocesamiento
+y la inferencia. Los archivos del modelo son los del ZIP proporcionado por
+el usuario: metadata.json, model.json y weights.bin.
+
+Arduino-ESP32, esp_camera y esp_http_server son dependencias del paquete de
+placas de Espressif. No se redistribuye ese paquete dentro de este ZIP.

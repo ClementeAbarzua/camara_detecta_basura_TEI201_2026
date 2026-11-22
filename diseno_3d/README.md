@@ -1,55 +1,47 @@
-# Diseño 3D - Documentación
+# Diseño 3D — "LA CARCASA"
 
-## ⚠️ REQUISITO CRÍTICO
+## Archivos
 
-El modelo 3D debe incluir **TODOS** los componentes del prototipo:
-- ✅ Encapsulado exterior completo
-- ✅ Placa ESP32/Arduino (con dimensiones exactas)
-- ✅ Batería / fuente de alimentación
-- ✅ Cableado (routing aproximado)
+| Carpeta / archivo | Contenido |
+|---|---|
+| `fusion360/Presentacion 3/LA CARCASA (f3d).f3z` | **Modelo final** en Fusion 360, con el ensamble completo |
+| `fusion360/Presentacion 3/LA CARCASA (stl).stl` | Exportación para imprimir |
+| `fusion360/Presentacion 2/Sensor Carcasa e Interior Design.step` | Diseño anterior (Avance #2, carcasa hexagonal) |
+| `planos/LA CARCASA - Blueprint.pdf` | Plano técnico con cotas y tolerancias |
+| `renders/` | Vistas del modelo 3D y fotos de iteraciones anteriores |
 
+## Gemelo 3D
 
----
+El ensamble de Fusion 360 incluye todos los componentes reales, no solo la carcasa:
+
+- **C. Inferior** y **C. Superior**: las dos mitades de la carcasa (diseño propio).
+- **Seeed Studio XIAO ESP32-S3 Sense** con cámara: modelo de GrabCAD (ver `FUENTES.md`).
+- **Batería Li-ion 523450**: volumen referencial de la batería.
+- **Interruptor SPDT SS12D00**.
+- **Disipador**.
 
 ## Especificaciones
 
-**Software:** Autodesk Fusion 360  
-**Unidades:** Milímetros (mm)  
-**Escala:** 1:1 (dimensiones reales)
+| Parámetro | Valor |
+|---|---|
+| Software | Autodesk Fusion 360 |
+| Unidades | mm |
+| Dimensiones externas | 77 × 58 × 30 mm (dos mitades de 15 mm) |
+| Material | PLA (impresión 3D) |
+| Tolerancias generales | ISO 2768-c |
+| Tolerancia de atornillado | 0.10 mm |
 
-**Dimensiones externas:** [X mm × Y mm × Z mm]  
-**Peso estimado:** [XXX gramos]  
-**Material:** [PLA, ABS, PETG, etc.]
+## Decisiones de diseño
 
----
+- **Dos mitades atornilladas sobre insertos de bronce:** se abre con un destornillador para reparar o cambiar componentes, sin pegamento. Los insertos evitan que la rosca se desgaste en el plástico.
+- **Aberturas funcionales:** orificio para el lente arriba, USB-C al frente (carga y programación sin abrir), ranura lateral para el interruptor.
+- **Ventilación:** ranuras en los costados para disipar el calor de la ESP32-S3 al procesar imágenes.
+- **Soportes internos:** guías que mantienen la XIAO y la batería en posición fija, para que la cámara no se mueva.
+- **Tamaño mínimo:** la carcasa se ajustó al volumen de la electrónica para que el dispositivo sea discreto en el espacio público.
 
-## Consideraciones de Diseño
+## Evolución
 
-### Funcionales
-- [ ] Acceso a puertos USB/alimentación
-- [ ] Ventilación adecuada
-- [ ] Protección de componentes
-- [ ] Fácil acceso para mantenimiento
-- [ ] Resistencia a condiciones ambientales
+- **Avance #2:** prisma hexagonal de 86 × 60 × 22 mm (archivo `.step`).
+- **Avance #3:** carcasa nueva de 77 × 58 × 30 mm. Se agregaron insertos de bronce, interruptor y ventilación.
 
-### Fabricación
-- [ ] Imprimible sin soportes excesivos
-- [ ] Tolerancias de ensamble (+0.2mm)
-- [ ] Grosor de pared mínimo 2mm
-- [ ] Sin ángulos imposibles (overhangs <45°)
-
----
-
-## Configuración de Impresión 3D (si fue utilizada)
-
-**Impresora:** [Modelo]  
-**Material:** [PLA/ABS/PETG]  
-**Calidad de capa:** 0.2mm  
-**Relleno:** 20-30%  
-**Soportes:** [Sí/No - dónde]  
-**Temperatura nozzle:** [°C]  
-**Temperatura cama:** [°C]  
-**Velocidad:** [mm/s]
-
-**Tiempo estimado de impresión:** [X horas]  
-**Peso de material:** [X gramos]
+[PENDIENTE: agregar parámetros de impresión: impresora, altura de capa, relleno y tiempo.]

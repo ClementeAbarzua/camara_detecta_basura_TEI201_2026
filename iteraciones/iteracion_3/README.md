@@ -1,66 +1,40 @@
-# Iteración 2 - Primera Mejora Significativa
+# Iteración 3 — Sistema IoT completo
 
-## Información General
+## Información general
 
-**Fecha:** 19/10/2026  
-**Estado:** Prototipo funcional mejorado  
-**Avance asociado:** Avance #2
+**Fecha:** 23/11/2026
+**Estado:** Prototipo IoT completo
+**Avance asociado:** Avance #3
 
----
+## Objetivos de esta iteración
 
-## Descripción
+- Conectar la cámara a una red WiFi externa en lugar de su propia red.
+- Guardar las detecciones en una base de datos en la nube y mostrarlas en un dashboard.
+- Diseñar una carcasa nueva, reparable y con todos los componentes integrados.
 
-Segunda versión del prototipo, incorporando feedback de la iteración 1 y del Avance #1. Incluye mejoras significativas en funcionalidad y primeros pasos en diseño de encapsulado.
-
-**Objetivos de esta iteración:**
-- Corregir problemas identificados en v1
-- Agregar funcionalidades adicionales
-- Iniciar diseño 3D del encapsulado
-- Realizar primeras pruebas
-
----
-
-## Cambios Respecto a v1
+## Cambios respecto a la iteración 2
 
 ### Hardware
-**Agregado:**
-- Bateria de 4.6Wh
+- Interruptor deslizante para apagar la batería sin abrir la carcasa.
 
 ### Software
-**Nuevas funcionalidades:**
-- Deteccion de Basura
+- La placa se conecta en modo estación a una red WiFi, con reconexión automática cada 20 s.
+- Código fuente comentado por secciones (carpeta `Codigo Fuente - Comentado/`, copiado como versión final a `software/src/firmware/`).
+- Regla de decisión por suma de clases de basura y promedio de las últimas 5 capturas.
+- Servidor en Railway con base de datos PostgreSQL (Aiven) y dashboard web: https://xiao-monitor-production.up.railway.app/
 
-**Bugs corregidos:**
-- Cuando no estaba seguro el modelo de que categoría era el objeto, no lograba concluir nada, entonces con un metodo de sumar porcentajes de las categorias y promediarlas, logra sacar una conclusión.
+### Diseño mecánico
+- Carcasa nueva "LA CARCASA" de 77 × 58 × 30 mm, en dos mitades unidas con tornillos sobre insertos de bronce.
+- Aberturas para el lente, el USB-C y el interruptor, más ranuras de ventilación.
+- Gemelo 3D con todos los componentes y plano técnico (ver `diseno_3d/`).
 
-### Diseño Mecánico
-- Primer diseño de encapsulado en Fusion 360
+## Problemas identificados
 
----
+- [PENDIENTE: completar con lo encontrado en las pruebas finales (ver `testing/`).]
 
-## Resultados de Testing
+## Trabajo futuro
 
-### Funcionalidad Lograda
-✅ Detecte Basura  
-✅ Detecte cuando no hay basura
-✅ Tome conlusiones justificadas
-
-
----
-
-## Plan para Iteración 3 (Versión Final)
-
-**Hardware:**
-- Agregar un interrputor para poder prender y apagar la bateria.
-- Integrar un método para poder ver el porcentaje de carga de la batería en pantalla.
-
-**Software:**
-- Agregar un modelo de estimacion de Volumen.
-- Mejorar el modelo de detección de basura.
-
-**Diseño:**
-- Refinar encapsulado
-- Finalizar sistema de montaje
-
-
----
+- Carcasa resistente a la lluvia para instalación en exterior.
+- Medidor de carga de la batería visible en el dashboard.
+- Estimación del volumen de basura acumulada, no solo de su presencia.
+- Más puntos de monitoreo y un mapa de puntos críticos en el dashboard.

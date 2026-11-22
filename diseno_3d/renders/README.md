@@ -1,54 +1,19 @@
-# Renders de Alta Calidad
+# Renders y vistas del modelo
 
-## Renders Requeridos (Mínimo 4 ángulos)
+## `fusion/` — Modelo final (Avance #3)
 
-### 1. Vista Isométrica Frontal
-`01_isometrica_frontal.png`
-- Muestra exterior completo
-- Iluminación clara
-- Resolución: 1920×1080 mínimo
+| Archivo | Vista |
+|---|---|
+| `01_interior_sin_tapa.jpg` | Isométrica sin la mitad superior: XIAO, cámara, batería e interruptor en su posición |
+| `02_vista_frontal_usb.jpg` | Frontal: abertura del USB-C |
+| `03_vista_lateral.jpg` | Lateral derecha: distribución interna y ventilación |
+| `04_componentes_fuera_de_carcasa.jpg` | Componentes fuera de la carcasa (vista tipo explosionada) |
+| `05_vista_superior.jpg` | Superior: lente, interruptor y torres de tornillos |
+| `06_ensamble_completo.jpg` | Isométrica del ensamble completo y cerrado |
 
-### Renders Opcionales (Recomendados)
-- `02_detalle_sensores.png` - Close-up de sensores
-- `03_ensamble_explosionado.png` - Componentes separados
-- `04_variantes_color.png` - Si hay opciones de diseño
+## Carpetas anteriores
 
----
+- `Presentacion 2/`: imágenes del diseño del Avance #2.
+- `Presentacion 3/`: imágenes del Avance #3.
 
-## Configuración de Render en Fusion 360
-
-### Settings Recomendados
-- **Render Engine:** Local / Cloud
-- **Environment:** [Tipo de iluminación]
-- **Resolution:** 1920×1080 o superior
-- **Quality:** High
-- **Exposure:** [Ajustado para visibilidad]
-- **Effects:** Ambient Occlusion ON
-
-### Materiales y Apariencias
-Asignar materiales realistas:
-- Plástico: PLA/ABS mate o satinado
-- Electrónica: PCB verde, componentes negros
-- Metales: Tornillos acero inoxidable
-
----
-
-## Nomenclatura de Archivos
-```
-[numero]_[descripcion]_[version].png
-
-Ejemplo:
-01_isometrica_frontal_v3.png
-```
-
----
-
-## Checklist de Calidad
-
-- [ ] Resolución mínima 1920×1080
-- [ ] Formato PNG (con transparencia si aplica)
-- [ ] Iluminación sin sombras excesivas
-- [ ] Componentes internos visibles en corte
-- [ ] Fondo neutro o contextual apropiado
-- [ ] Sin aliasing o bordes pixelados
-- [ ] Todos los componentes críticos visibles
+> [PENDIENTE: exportar desde el espacio *Render* de Fusion 360 al menos una vista exterior y una explosionada con material (plástico naranja) e iluminación.]

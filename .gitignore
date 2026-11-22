@@ -1,0 +1,18 @@
+# Credenciales: nunca subir
+.env
+secrets.h
+config_local.h
+
+# Node (servidor)
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/

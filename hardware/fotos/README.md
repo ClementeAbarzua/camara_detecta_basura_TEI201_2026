@@ -1,39 +1,14 @@
-# Fotografías del Prototipo
+# Fotografías del prototipo
 
-## Requisitos de las Fotos
+| Archivo | Qué muestra |
+|---|---|
+| `01_apertura_con_destornillador.jpg` | La carcasa se abre con un destornillador: diseño para la reparación |
+| `02_montaje_en_tripode.jpg` | Prototipo montado en trípode, como se instalaría frente a un punto crítico |
+| `03_ensamblada_lente_e_interruptor.jpg` | Carcasa cerrada: orificio del lente, interruptor lateral y ventilación |
+| `04_ensamblada_puerto_usb.jpg` | Carcasa cerrada: acceso al USB-C para carga y programación |
+| `05_mitades_con_insertos.jpg` | Ambas mitades abiertas con los insertos de bronce instalados |
+| `06_tapa_con_inserto_y_ventilacion.jpg` | Mitad superior: inserto roscado, ranuras de ventilación y orificio del tornillo |
+| `07_interior_ventilacion.jpg` | Interior de una mitad: ventilación y torres para tornillos |
+| `08_mitades_recien_impresas.jpg` | Piezas recién impresas, antes de instalar los insertos |
 
-### Calidad
-- **Resolución mínima:** 1920x1080 px
-- **Formato:** JPG o PNG
-- **Iluminación:** Buena iluminación natural o artificial uniforme
-- **Fondo:** Neutro y sin distracciones
-
-### Tomas Requeridas
-
-1. **Vista general del prototipo completo**
-   - `01_vista_general.jpg`
-
-2. **Vista del circuito interno**
-   - `02_circuito_interno.jpg`
-
-3. **Detalle de conexiones críticas**
-   - `03_detalle_conexiones.jpg`
-
-4. **Vista de sensores montados**
-   - `04_sensores.jpg`
-
-5. **Vista de actuadores**
-   - `05_actuadores.jpg`
-
-6. **Encapsulado cerrado (si aplica)**
-   - `06_encapsulado_cerrado.jpg`
-
-7. **Prototipo en contexto de uso**
-   - `07_contexto_uso.jpg`
-
----
-
-## Nomenclatura
-- Numerar según orden: `01_`, `02_`, etc.
-- Usar nombres descriptivos
-- Incluir versión si hay múltiples: `v3_01_vista_general.jpg`
+> [PENDIENTE: agregar una foto con la electrónica montada dentro de la carcasa abierta, por ejemplo `09_electronica_montada.jpg`]

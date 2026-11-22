@@ -1,93 +1,32 @@
-# Testing y Validación
+# Testing y validación
 
 ## Objetivo
-Validar el funcionamiento del prototipo con usuarios reales y medir el impacto cuantitativo en la problemática ODS seleccionada.
 
----
+Comprobar que el sistema detecta correctamente la presencia de basura y que la información que genera sirve para decidir cuándo limpiar un punto crítico (problema del Avance #1).
 
-## 📁 Carpetas
+## Carpetas
 
-#### `reportes/`
-Documentos con resultados del testing
+| Carpeta | Contenido |
+|---|---|
+| `reportes/` | Protocolo de pruebas y resultados ([`protocolo_pruebas.md`](reportes/protocolo_pruebas.md)) |
+| `datos/` | Datos exportados de la base de datos (CSV) y tablas de resultados |
+| `evidencias/` | Capturas del dashboard y fotos de las pruebas |
 
-#### `evidencias/`
-Fotos y videos de sesiones con usuarios
+## Resumen de resultados
 
-#### `datos/`
-Datos cuantitativos recolectados
+| Métrica | Resultado | Criterio de éxito |
+|---|---|---|
+| Exactitud de detección (hay / no hay basura) | [PENDIENTE] % | ≥ 80 % |
+| Tiempo desde que aparece la basura hasta la alerta | [PENDIENTE] s | ≤ 10 s |
+| Falsos positivos con escena vacía | [PENDIENTE] de [N] | 0 |
+| Pérdidas de conexión durante la prueba continua | [PENDIENTE] | 0 |
 
----
+## Falla principal encontrada y solución
 
-## Metodología de Testing
+**Falla:** con objetos que no estaban en el entrenamiento, el modelo repartía la probabilidad entre las tres clases de basura. Ninguna superaba el 80 % y el sistema nunca concluía.
 
-### Grupo Objetivo
-- **Perfil de usuarios:** [Descripción]
-- **Cantidad mínima:** 5 usuarios
-- **Ubicación:** [Contexto real de uso]
+**Solución:** sumar las tres clases de basura y promediar las últimas 5 capturas antes de comparar con el umbral (ver `software/docs/README.md`). Con este cambio, el sistema concluye "Hay basura" también con residuos distintos a los entrenados.
 
-### Protocolo de Testing
-1. **Briefing** (5 min)
-   - Explicar propósito del prototipo
-   - Contexto de uso
+## Conexión con el problema
 
-2. **Sesión de Uso** (15-20 min)
-   - Usuario interactúa con prototipo
-   - Observación sin intervención
-   - Toma de notas
-
-3. **Entrevista Post-Testing** (10 min)
-   - Preguntas sobre experiencia
-   - Feedback cualitativo
-   - Sugerencias de mejora
-
-4. **Encuesta Cuantitativa** (5 min)
-   - Escala Likert (1-5)
-   - Métricas específicas
-
----
-
-## Métricas de Evaluación
-
-### Usabilidad
-- Facilidad de uso (1-5)
-- Claridad de funcionamiento (1-5)
-- Satisfacción general (1-5)
-
-### Impacto ODS
-- [Métrica específica 1 relacionada con ODS]
-- [Métrica específica 2 relacionada con ODS]
-- [Métrica específica 3 relacionada con ODS]
-
-### Desempeño Técnico
-- Tiempo de respuesta del sistema
-- Tasa de errores
-- Confiabilidad
-
----
-
-## Análisis de Resultados
-
-### Cuantitativo
-- Promedios y desviaciones estándar
-- Gráficos de resultados
-- Comparación con baseline
-
-### Cualitativo
-- Temas recurrentes en feedback
-- Problemas identificados
-- Sugerencias de mejora
-
----
-
-## Validación de Impacto ODS
-
-**ODS Seleccionado:** [Número y nombre]
-
-**Meta específica del proyecto:** [Describir]
-
-**Indicadores de impacto:**
-1. [Indicador 1] - Baseline: [X], Meta: [Y], Alcanzado: [Z]
-2. [Indicador 2] - Baseline: [X], Meta: [Y], Alcanzado: [Z]
-
-**Proyección de impacto a escala:**
-[Si el prototipo se despliega en toda la ciudad/comunidad, cuál sería el impacto estimado]
+[PENDIENTE: completar con los resultados. Ejemplo: "En N pruebas, el sistema detectó la basura en X de Y casos, con la alerta en Z segundos. Con esto, un equipo municipal se entera de un microbasural nuevo sin esperar un reclamo vecinal".]

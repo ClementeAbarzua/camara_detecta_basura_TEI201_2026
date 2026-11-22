@@ -29,8 +29,8 @@
 // EDITA SOLO ESTAS DOS LINEAS CON LOS DATOS DE TU RED WIFI:
 // Conserva las comillas. Para una red abierta, usa password = "".
 // =============================================================
-static const char *WIFI_SSID = "iPhone de Santiago";
-static const char *WIFI_PASSWORD = "12345678";
+static const char *WIFI_SSID = "NOMBRE_DE_TU_WIFI";
+static const char *WIFI_PASSWORD = "CONTRASENA_DE_TU_WIFI";
 
 static constexpr uint32_t WIFI_RETRY_MS = 20000;
 static constexpr uint32_t WIFI_STATUS_MS = 30000;

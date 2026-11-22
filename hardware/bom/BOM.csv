@@ -1,0 +1,9 @@
+Ref,Componente,Cantidad,Especificacion,Unitario USD (referencia),Subtotal USD,Tipo de precio,Fuente del precio
+U1,Seeed Studio XIAO ESP32-S3 Sense (camara + antena),1,"ESP32-S3, 8 MB PSRAM, 8 MB flash, WiFi 2.4 GHz",15.26,15.26,Precio de tienda,https://www.robotshop.com/es/products/seeedstudio-xiao-esp32s3-sense-wifi-ble-ov2640-mic-8mb-iot-embedded-ml
+BAT1,Bateria LiPo,1,"3.7 V, ~1200 mAh (4.6 Wh)",9.00,9.00,Estimado,"Cyberpuerta: LiPo 3.7 V 1200 mAh a $165 MXN"
+SW1,Interruptor deslizante SPDT,1,SS12D00 o equivalente,0.50,0.50,Estimado,Componente generico
+C1+C2,Carcasa impresa en 3D (2 mitades),1,"PLA, ~40 g de filamento",1.00,1.00,Estimado,"~40 g x ~25 USD/kg de PLA"
+H1,Inserto roscado de bronce M3,2,Termofijado,0.11,0.22,Precio de tienda,"https://www.prusa3d.com/es/producto/insertos-roscados-m3-estandar-100-pcs/ (100 uds a 10.99 USD)"
+H2,Tornillo M3,2,Acero,0.10,0.20,Estimado,Componente generico
+W1,Cables de alimentacion rojo y negro,1,Juego corto,0.50,0.50,Estimado,Componente generico
+TOTAL,,,,,26.68,,

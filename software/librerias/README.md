@@ -1,47 +1,23 @@
-# Librerías
+# Librerías y versiones
 
-## Librerías Estándar (Arduino IDE)
+No se redistribuye ninguna librería en esta carpeta: todas se instalan desde su fuente oficial. Detalle de origen y licencias en [`FUENTES.md`](../../FUENTES.md).
 
-Instalar desde el Library Manager de Arduino IDE:
+## Firmware (Arduino IDE)
 
-1. **[Nombre Librería 1]** - v[X.X.X]
-   - Propósito: [Descripción]
-   - Instalación: `Sketch > Include Library > Manage Libraries > Buscar "[nombre]"`
+| Librería | Versión | Cómo se obtiene |
+|---|---|---|
+| esp32 by Espressif Systems (Arduino-ESP32) | 3.3.0 | Gestor de placas de Arduino IDE |
+| `WiFi.h`, `esp_camera.h`, `esp_http_server.h`, FreeRTOS | incluidas en 3.3.0 | Vienen con el paquete de placas |
 
-2. **[Nombre Librería 2]** - v[X.X.X]
-   - Propósito: [Descripción]
-   - Instalación: [Instrucciones]
+El firmware no necesita librerías extra del gestor de librerías.
 
----
+## Página de detección (embebida en `assets.h`)
 
-## Librerías Personalizadas/Modificadas
+| Librería | Versión |
+|---|---|
+| TensorFlow.js | 1.7.4 |
+| @teachablemachine/image | 0.8.5 |
 
-Si hay librerías modificadas o no disponibles en Arduino IDE, incluir en esta carpeta:
+## Servidor (Node.js)
 
-### Estructura
-```
-librerias/
-├── MiLibreria/
-│   ├── MiLibreria.h
-│   ├── MiLibreria.cpp
-│   ├── keywords.txt
-│   └── README.md
-```
-
-### Instalación Manual
-```bash
-# Copiar carpeta a Arduino libraries
-cp -r MiLibreria ~/Documents/Arduino/libraries/
-```
-
----
-
-## Dependencias Completas
-
-Listar TODAS las librerías necesarias con versiones exactas:
-
-| Librería | Versión | Fuente | Obligatoria |
-|----------|---------|--------|-------------|
-| WiFi | Built-in | ESP32 Core | ✅ |
-| [Lib 1] | x.x.x | Arduino Library Manager | ✅ |
-| [Lib 2] | x.x.x | GitHub | ❌ |
+Ver `software/src/servidor/package.json`. [PENDIENTE: completar cuando se suba el servidor]

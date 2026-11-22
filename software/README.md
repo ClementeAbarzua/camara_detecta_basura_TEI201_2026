@@ -1,89 +1,28 @@
-# Software - Documentación
+# Software
 
-## Contenido
-Esta carpeta contiene todo el código y documentación del software del proyecto.
+Todo el código del sistema: el firmware que corre en la cámara, el servidor en la nube y el dashboard.
 
-### 📁 Carpetas
+## Carpetas
 
-#### `src/`
-Código fuente del proyecto (.ino para Arduino/ESP32)
+| Carpeta | Contenido |
+|---|---|
+| `src/firmware/XIAO_Deteccion_WiFi/` | Firmware final de la XIAO ESP32-S3 Sense, con el modelo de detección embebido |
+| `src/servidor/` | Servidor Express desplegado en Railway, conexión a PostgreSQL (Aiven) y dashboard |
+| `librerias/` | Versiones de las librerías y del paquete de placas usados |
+| `docs/` | Notas técnicas: flujo de datos y regla de decisión |
 
-#### `librerias/`
-Librerías adicionales necesarias (no incluidas en Arduino IDE)
+## Ciclo de datos
 
-#### `docs/`
-Documentación técnica del software
+1. **Captura:** la cámara OV3660 toma una foto (JPEG) aproximadamente cada segundo.
+2. **Clasificación:** el modelo de Teachable Machine (TensorFlow.js) asigna una probabilidad a cada clase: Sin basura, Botellas, Papeles y Cartones, Bolsas.
+3. **Decisión:** se suman las tres clases de basura y se promedian las últimas 5 capturas. Si el promedio supera el umbral (80 % por defecto) en 3 evaluaciones seguidas, el sistema declara **"Hay basura"**.
+4. **Almacenamiento:** el resultado se guarda en PostgreSQL (Aiven) a través del servidor de Railway.
+5. **Visualización:** el dashboard muestra el estado actual, el histórico de detecciones y las alertas.
 
----
+## Por qué esta frecuencia
 
-## Stack Tecnológico
+Un microbasural se forma en horas, no en segundos. Pero una persona o un auto que pasa frente a la cámara puede tapar la escena por un momento. Capturar cerca de una vez por segundo y exigir varias lecturas seguidas evita falsas alarmas por objetos de paso, sin perder ninguna acumulación real.
 
-**Plataforma:** Arduino / ESP32  
-**Lenguaje:** C/C++  
-**IDE:** Arduino IDE 2.x  
-**Librerías principales:**
-- [Librería 1] - Versión X.X
-- [Librería 2] - Versión X.X
-- [Librería 3] - Versión X.X
+## Cómo usarlo
 
----
-
-## Instalación y Configuración
-
-### 1. Instalar Arduino IDE
-[Instrucciones de instalación]
-
-### 2. Configurar ESP32/Arduino
-[Pasos de configuración]
-
-### 3. Instalar Librerías
-```bash
-# Copiar librerías personalizadas
-cp -r librerias/* ~/Arduino/libraries/
-```
-
-### 4. Cargar Código
-1. Abrir `src/main.ino`
-2. Seleccionar placa y puerto
-3. Compilar y subir
-
----
-
-## Configuración de Parámetros
-
-Editar las siguientes constantes en el código:
-
-```cpp
-// WiFi
-#define WIFI_SSID "tu_red"
-#define WIFI_PASS "tu_password"
-
-// Sensores
-#define SENSOR_PIN 4
-#define SAMPLE_RATE 1000
-
-// Otros parámetros
-```
-
----
-
-## Arquitectura del Software
-
-[Incluir diagrama de flujo o arquitectura]
-
-### Módulos Principales
-1. **Inicialización** - Setup del sistema
-2. **Lectura de Sensores** - Captura de datos
-3. **Procesamiento** - Análisis y decisiones
-4. **Actuación** - Control de actuadores
-5. **Comunicación** - Envío de datos
-
----
-
-## API / Endpoints (si aplica)
-
-| Endpoint | Método | Descripción |
-|----------|--------|-------------|
-| `/status` | GET | Estado del sistema |
-| `/data` | GET | Datos de sensores |
-| `/control` | POST | Control de actuadores |
+Ver las instrucciones paso a paso en el [README principal](../README.md#️-instrucciones-de-uso).

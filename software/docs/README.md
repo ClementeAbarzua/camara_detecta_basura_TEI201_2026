@@ -1,57 +1,20 @@
-# Documentación de Software
+# Documentación técnica del software
 
-## Contenido
+## Modelo de clasificación
 
-### Diagramas de Flujo
-Incluir diagramas de las funciones principales del sistema.
+- **Herramienta:** Teachable Machine (Google), modelo de imagen.
+- **Clases:** Sin basura, Botellas, Papeles y Cartones, Bolsas.
+- **Datos de entrenamiento:** fotos propias tomadas con la misma cámara XIAO y con los mismos ajustes de imagen que usa el firmware. Están en `iteraciones/iteracion_2/Modelo/Fotos Entrenamiento/`.
 
-**Formato:** PNG, PDF o draw.io
+## Regla de decisión
 
-### Documentación de Funciones
+Problema encontrado en la iteración 2: con objetos que no estaban en el entrenamiento, el modelo repartía la probabilidad entre las clases de basura. Ninguna clase llegaba sola al 80 %, así que el sistema nunca concluía nada.
 
-#### Funciones Principales
+Solución (en `web_fuentes/app.js`):
 
-**función1()**
-- **Propósito:** [Descripción]
-- **Parámetros:** [Tipo y descripción]
-- **Retorna:** [Tipo y descripción]
-- **Ejemplo de uso:**
-```cpp
-// Código de ejemplo
-```
+1. Por cada captura: `basura = P(Botellas) + P(Papeles y Cartones) + P(Bolsas)`.
+2. Se guardan las últimas **5** probabilidades de basura y, con al menos **3**, se calcula el promedio.
+3. Si el promedio ≥ umbral (80 % por defecto, ajustable en la página) → candidato "Hay basura". Si `1 − promedio` ≥ umbral → candidato "Sin basura".
+4. El veredicto solo cambia cuando el mismo candidato se repite en **3** evaluaciones consecutivas.
 
----
-
-## Manual de Instalación
-
-[Paso a paso detallado para instalar y configurar el software]
-
----
-
-## Manual de Operación
-
-### Encendido del Sistema
-1. [Paso 1]
-2. [Paso 2]
-
-### Operación Normal
-1. [Paso 1]
-2. [Paso 2]
-
-### Apagado del Sistema
-1. [Paso 1]
-2. [Paso 2]
-
----
-
-## Troubleshooting
-
-### Problemas Comunes
-
-**Problema 1: No conecta a WiFi**
-- Causa probable: [Explicación]
-- Solución: [Pasos]
-
-**Problema 2: Sensor no responde**
-- Causa probable: [Explicación]
-- Solución: [Pasos]
+Así el sistema responde a la pregunta que importa para el problema (¿hay basura acumulada?) sin depender de reconocer el tipo exacto de residuo.

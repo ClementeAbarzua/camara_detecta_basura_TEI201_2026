@@ -50,8 +50,6 @@ Segunda versión del prototipo, incorporando feedback de la iteración 1 y del A
 
 ## Plan para Iteración 3 (Versión Final)
 
-### Mejoras Críticas
-
 **Hardware:**
 - Agregar un interrputor para poder prender y apagar la bateria.
 - Integrar un método para poder ver el porcentaje de carga de la batería en pantalla.

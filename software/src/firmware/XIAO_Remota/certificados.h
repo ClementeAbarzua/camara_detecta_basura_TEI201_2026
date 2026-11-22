@@ -1,3 +1,6 @@
+/**
+ * Conjunto de CA raíz públicas para validar TLS. No son claves privadas. No editar el contenido PEM ni insertar comentarios dentro del literal R"XIAO_CA(...).
+ */
 #pragma once
 // Certificados raiz publicos (ISRG, Google Trust Services y DigiCert).
 // Validan HTTPS; actualizar si cambia la cadena de certificados del servicio.

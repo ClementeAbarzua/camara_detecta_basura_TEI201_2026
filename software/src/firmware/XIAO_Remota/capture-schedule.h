@@ -1,3 +1,6 @@
+/**
+ * Planificación pura del siguiente envío. Error: espera al menos 30 s. Modo estable: pausa completa tras enviar. Demo: espera solo lo que falta para completar el ciclo objetivo.
+ */
 #pragma once
 #include <stdint.h>
 

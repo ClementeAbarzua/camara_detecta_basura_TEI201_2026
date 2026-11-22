@@ -1,3 +1,6 @@
+/**
+ * Plantilla de configuración. Copiar como config.h y completar localmente; config.h está excluido de Git y de esta entrega. Los ejemplos no son credenciales utilizables.
+ */
 #pragma once
 // Copia este archivo como config.h y completa los cuatro valores.
 // config.h esta excluido de Git para no publicar tus claves.

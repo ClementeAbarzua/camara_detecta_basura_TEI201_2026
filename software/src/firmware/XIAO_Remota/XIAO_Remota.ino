@@ -1,3 +1,7 @@
+/**
+ * Firmware de la XIAO ESP32-S3 Sense: solo captura y transporta JPEG; la inferencia y decisión se ejecutan en Railway.
+ * Pausa de detección y video administrativo son canales distintos. Conserva tu config.h privado al cargar este sketch.
+ */
 /* XIAO ESP32-S3 Sense / OV3660: envia JPEG por HTTPS a Railway.
  * Arduino-ESP32 3.3.x. Placa XIAO_ESP32S3, OPI PSRAM, USB CDC Enabled.
  * Completa config.h. Monitor serie 115200. No requiere assets.h ni SD.
@@ -27,6 +31,7 @@ static bool configured = false, wifiWasConnected = false;
 static uint32_t lastWifiAttempt = 0, lastClockWarning = 0, nextCapture = 0, sequence = 0;
 static char bootId[17];
 // La pausa se confirma antes de capturar al arrancar. En marcha llega con la respuesta HTTPS.
+// Arranque conservador: antes de capturar se debe conocer la orden vigente del servidor.
 static bool capturePaused = true, controlReady = false, cameraInitialized = false;
 static uint32_t lastControlAttempt = 0;
 static String controlVersion = "0", controlURL, videoHost;
@@ -36,9 +41,13 @@ static uint32_t videoSent = 0, videoAcked = 0;
 static uint16_t videoPort = 443;
 static bool videoReady = false, videoCamera = false, videoClosing = false, videoFailed = false;
 static WebSocketsClient *videoClient = nullptr;
+// Cadencia objetivo de video: ~83 ms por cuadro. La red puede reducir los fps efectivos.
 static constexpr uint32_t VIDEO_FRAME_MS = 83; // Objetivo 12 fps; se adapta a red y créditos.
 static constexpr uint32_t VIDEO_MAX_PENDING = 3; // Sin cola de cuadros antiguos.
 struct HttpReply { String text; int paused = -1; int preview = -1; String version; };
+/**
+ * Acepta una versión decimal acotada sin interpretar mensajes arbitrarios como órdenes.
+ */
 static bool validVersion(const String &value) {
   if (!value.length() || value.length() > 19) return false;
   for (size_t i = 0; i < value.length(); ++i) if (value[i] < '0' || value[i] > '9') return false;
@@ -46,6 +55,9 @@ static bool validVersion(const String &value) {
 }
 
 // Se conservan los pines, resolucion y ajustes de tu version funcional.
+/**
+ * Configura pines de la XIAO, PSRAM y JPEG 800 × 600 para análisis; devuelve el error de inicialización del controlador.
+ */
 static esp_err_t initCamera() {
   if (!psramFound()) { Serial.println("ERROR: activa OPI PSRAM."); return ESP_FAIL; }
   camera_config_t c = {};
@@ -70,6 +82,12 @@ static esp_err_t initCamera() {
   return ESP_OK;
 }
 
+/**
+
+ * Recoge órdenes de las cabeceras y una respuesta acotada para no crecer sin límite en RAM.
+
+ */
+
 static esp_err_t onHttpEvent(esp_http_client_event_t *event) {
   HttpReply *response = static_cast<HttpReply *>(event->user_data);
   if (!response) return ESP_OK;
@@ -88,6 +106,12 @@ static esp_err_t onHttpEvent(esp_http_client_event_t *event) {
   return ESP_OK;
 }
 
+/**
+
+ * Cierra y destruye el cliente WSS y reinicia créditos/estado; no modifica el historial del servidor.
+
+ */
+
 static void closePreviewClient() {
   videoClosing = true;
   if (videoClient) { videoClient->disconnect(); delete videoClient; videoClient = nullptr; }
@@ -95,6 +119,9 @@ static void closePreviewClient() {
 }
 
 // Se cambia solo el video; cada análisis conserva 800x600 y calidad JPEG 12.
+/**
+ * Alterna resolución/calidad entre análisis y video y descarta cuadros de la resolución anterior.
+ */
 static bool cameraVideoMode(bool video) {
   if (!cameraInitialized || videoCamera == video) return cameraInitialized;
   sensor_t *sensor = esp_camera_sensor_get();
@@ -108,6 +135,12 @@ static bool cameraVideoMode(bool video) {
   for (int i=0; i<2; i++) { camera_fb_t *old = esp_camera_fb_get(); if (old) esp_camera_fb_return(old); }
   return true;
 }
+
+/**
+
+ * Procesa conexión, ACK y STATE. Un ACK confirma cuadros recibidos; STATE entrega pausa/reanudación y versión autenticadas.
+
+ */
 
 static void onVideoEvent(WStype_t type, uint8_t *payload, size_t length) {
   if (type == WStype_CONNECTED) {
@@ -138,6 +171,12 @@ static void onVideoEvent(WStype_t type, uint8_t *payload, size_t length) {
   } else if (type == WStype_ERROR) videoFailed = true;
 }
 
+/**
+
+ * Abre WSS con CA y token de cámara. El protocolo 3 identifica la transmisión continua actual.
+
+ */
+
 static void beginVideo() {
   if (videoClient || static_cast<int32_t>(millis() - videoRetryAt) < 0) return;
   videoFailed = false;
@@ -151,6 +190,12 @@ static void beginVideo() {
   videoClient->onEvent(onVideoEvent);
 }
 
+/**
+
+ * Adjunta autenticación y estado reconocido por la placa para que el administrador pueda comprobar que una orden se aplicó.
+
+ */
+
 static void deviceHeaders(esp_http_client_handle_t client) {
   const String authorization = String("Bearer ") + CAMERA_TOKEN;
   esp_http_client_set_header(client, "Authorization", authorization.c_str());
@@ -161,6 +206,9 @@ static void deviceHeaders(esp_http_client_handle_t client) {
 }
 
 // Video MJPEG continuo sobre WSS: un enlace permanente, no un POST por cuadro.
+/**
+ * Envía un JPEG binario solo si hay enlace listo y crédito; no genera una medición ni llama al modelo.
+ */
 static bool sendPreview(camera_fb_t *frame) {
   if (!videoClient || !videoReady || frame->width != 320 || frame->height != 240 || frame->len > 200000) return false;
   if (videoSent - videoAcked >= VIDEO_MAX_PENDING) return false;
@@ -171,6 +219,9 @@ static bool sendPreview(camera_fb_t *frame) {
 }
 
 // Sin video, la pausa se consulta cada 3 s. Durante el video llega por WSS.
+/**
+ * Consulta por HTTPS pausa, versión y solicitud de video. Si la respuesta no es válida, conserva la captura bloqueada hasta reconciliar.
+ */
 static bool readControl() {
   HttpReply response;
   esp_http_client_config_t config = {};
@@ -193,6 +244,7 @@ static bool readControl() {
     return false;
   }
   const bool paused = command == "PAUSE";
+  // Reconciliar órdenes al inicio, tras errores y durante pausa; normalmente cada tres segundos sin video.
   if (!controlReady || paused != capturePaused) Serial.println(paused ? "Deteccion pausada por el administrador." : "Deteccion reanudada.");
   capturePaused = paused; controlVersion = version; controlReady = true;
   const bool requested = live == "PREVIEW";
@@ -203,6 +255,9 @@ static bool readControl() {
 }
 
 // HTTPS verifica certificado y nombre del servidor mediante certificados.h.
+/**
+ * Envía una foto de análisis por HTTPS con arranque/secuencia, espera la respuesta y recoge las nuevas órdenes. Su duración incluye red y servidor.
+ */
 static bool sendPhoto(camera_fb_t *frame) {
   HttpReply response; response.text.reserve(768);
   esp_http_client_config_t config = {};
@@ -243,6 +298,12 @@ static bool sendPhoto(camera_fb_t *frame) {
   return result == ESP_OK && status == 200;
 }
 
+/**
+
+ * Se ejecuta una vez: valida config.h, prepara cámara y WiFi en modo estación y solicita hora NTP para verificar TLS.
+
+ */
+
 void setup() {
   Serial.begin(115200); delay(800);
   if (!strlen(WIFI_SSID) || strcmp(WIFI_SSID, "NOMBRE_DE_TU_WIFI") == 0 ||
@@ -276,6 +337,12 @@ void setup() {
   Serial.println("Conectando a Internet. El analisis ocurre en Railway.");
 }
 
+/**
+
+ * Se repite: mantiene conexión y control, decide si corresponde una foto de análisis o un cuadro de video y respeta las pausas.
+
+ */
+
 void loop() {
   if (!configured) { delay(250); return; }
   const uint32_t now = millis();
@@ -288,6 +355,7 @@ void loop() {
     wifiWasConnected = true;
     Serial.printf("WiFi conectado. IP local %s. El monitor remoto usa la URL de Railway.\n", WiFi.localIP().toString().c_str());
   }
+  // No se omite la verificación TLS: se espera a disponer de una hora razonable.
   if (time(nullptr) < 1700000000) {
     if (now - lastClockWarning > 15000) { lastClockWarning = now; Serial.println("Esperando hora de Internet (NTP) para HTTPS..."); }
     delay(100); return;
@@ -298,6 +366,7 @@ void loop() {
     closePreviewClient(); controlReady = false; videoRetryAt = millis() + 2000;
   }
   if (!previewRequested) closePreviewClient();
+  // Pausa sin vista en vivo: desinicializar el sensor detiene también la toma física de imágenes.
   if (capturePaused && !previewRequested && cameraInitialized) {
     esp_camera_deinit(); cameraInitialized = false; videoCamera = false;
   }
@@ -317,6 +386,7 @@ void loop() {
     cameraInitialized = true; videoCamera = false;
   }
   if (previewRequested) { beginVideo(); if (videoClient) videoClient->loop(); }
+  // La detección normal tiene prioridad y conserva la resolución de análisis aunque se esté mostrando video.
   if (!capturePaused && static_cast<int32_t>(millis() - nextCapture) >= 0) {
     const uint32_t cycleStarted = millis();
     bool sent = false;
@@ -329,6 +399,7 @@ void loop() {
         esp_camera_fb_return(frame);
       } else Serial.println("No se pudo obtener una captura.");
     }
+    // En demo se descuenta del intervalo el trabajo ya realizado; no son cinco segundos extra después del envío.
     const uint32_t elapsed = millis() - cycleStarted;
     const uint32_t interval = DEMO_MODE ? DEMO_CYCLE_MS : CAPTURE_INTERVAL_MS;
     const uint32_t pause = capturePauseMs(sent, DEMO_MODE, interval, elapsed);
@@ -337,6 +408,7 @@ void loop() {
       static_cast<unsigned long>(pause), DEMO_MODE ? "demo 5s" : "estable");
     if (videoClient && previewRequested) videoClient->loop();
   }
+  // El video usa el tiempo disponible y máximo tres cuadros sin ACK; con detección pausada puede seguir sirviendo para encuadrar.
   if (controlReady && videoReady && previewRequested && static_cast<int32_t>(millis() - nextPreview) >= 0 &&
       videoSent - videoAcked < VIDEO_MAX_PENDING && (capturePaused || static_cast<int32_t>(nextCapture - millis()) > 150)) {
     const uint32_t started = millis();
